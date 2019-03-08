@@ -2,11 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Timesheet</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="script.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
-hahahhahahahah
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <form class="login-form">
+            <input type="text" id="username" class="fadeIn second" autofocus name="login" placeholder="login">
+            <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
+            <input type="submit" id="login_submit" class="fadeIn fourth" value="Log In">
+            <p class="text-danger" id="error_msg"></p>
+        </form>
+    </div>
+    <div class="time-sheet" id="time_sheet">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">日</th>
+                <th scope="col">曜日</th>
+                <th scope="col">始業時刻</th>
+                <th scope="col">終業時刻</th>
+                <th scope="col">休憩時間２</th>
+                <th scope="col">所定内</th>
+                <th scope="col">残業時間</th>
+                <th scope="col">遅</th>
+                <th scope="col">早</th>
+                <th scope="col">お休み</th>
+                <th scope="col">備考</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>2019/02/01</td>
+                <td>金</td>
+                <td>10:00</td>
+                <td>22:00</td>
+                <td>0:30</td>
+                <td>8:00</td>
+                <td>2:30</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="today-time" id="today_time">
+        <span class="today" id="today"></span>
+        <input type="time" name="start_time">:<input type="time" name="end_time">
+    </div>
+    <button class="btn btn-primary">Submit</button>
+</div>
 </body>
+<script src="script.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </html>
