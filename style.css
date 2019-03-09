@@ -2,7 +2,7 @@
 /* BASIC */
 
 html {
-    background-color: #56baed;
+    /*background-color: #56baed;*/
 }
 
 body {
@@ -269,4 +269,35 @@ input[type=text]:placeholder {
 /*}*/
 #formContent{
     display: none;
+}
+
+.time-sheet thead {
+    background-color: #cbdbb8;
+}
+
+/*.time-sheet tbody > tr > td:nth-child(2) {*/
+    /*background-color: #cbdbb8;*/
+/*}*/
+
+.time-sheet .saturday > td:nth-child(2) {
+    color: dodgerblue;
+}
+
+.time-sheet .sunday > td:nth-child(2) {
+    color: red;
+}
+
+.time-sheet thead > tr > th:last-child, .time-sheet tbody > tr > td:last-child {
+    /*display: none;*/
+}
+
+.time-sheet .holiday {
+    background-color: lightgrey;
+}
+
+.weekday::before {
+    content: '(';
+}
+.weekday::after {
+    content: ')';
 }
