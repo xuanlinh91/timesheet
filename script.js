@@ -72,7 +72,7 @@ $(function () {
         }
 
         displayTime() {
-            return (formatNumberLessThanTen(this.hour) + ":" + formatNumberLessThanTen(this.minute)).toString();
+            return (formatNumberLessThanTen(this.hour) + ":" + formatNumberLessThanTen(this.minute) + ":00").toString();
         }
     }
 
@@ -181,7 +181,7 @@ $(function () {
             mm = '0' + mm;
         }
         // var today = dd + '/' + mm + '/' + yyyy;
-        var today = yyyy + '/' + mm + '/' + dd;
+        var today = mm + '月' + dd + '日';
 
         return today;
     }
@@ -223,9 +223,12 @@ $(function () {
                 rowClass += " holiday";
             }
 
-            let tr = "<tr class='timesheet-row" + rowClass + "' id='" + timesheet[0] + "'></tr>";
+            let tr = "<tr class='timesheet-row" + rowClass + "' id='day" + (index + 1) + "'></tr>";
             $('#time_sheet table tbody').append(tr);
-            timesheet.forEach(function (col) {
+            timesheet.forEach(function (col, index) {
+                // if (index === 0) {
+                //     col = toJpMonthDate(col);
+                // }
                 var td = "<td>" + col + "</td>";
                 $('#time_sheet table tbody tr:last-child').append(td);
             });
@@ -305,6 +308,11 @@ $(function () {
                 timesheets[dateIndex][index] = col;
             });
         });
+    }
+
+    function toJpMonthDate(monthDate){
+        let tmp = monthDate.split('/');
+        return tmp[1] + "月" + tmp[2] + "日";
     }
 });
 
