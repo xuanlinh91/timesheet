@@ -7,7 +7,8 @@ $(function () {
     weekday[4] = "木";
     weekday[5] = "金";
     weekday[6] = "土";
-
+    var domain = "http://ec2-13-230-40-192.ap-northeast-1.compute.amazonaws.com:8081/";
+    // var domain = "http://localhost:8081/";
     class time {
         constructor() {
             return this;
@@ -156,7 +157,7 @@ $(function () {
         await $.ajax({
             method: "POST",
             dataType: 'json',
-            url: "http://localhost:8081/time_sheet_processor.php",
+            url: domain + "time_sheet_processor.php",
             data: {tag: 'saveTs', data: timesheets}
         })
             .done(function (data) {
@@ -195,7 +196,7 @@ $(function () {
         await $.ajax({
             method: "POST",
             dataType: 'json',
-            url: "http://localhost:8081/time_sheet_processor.php",
+            url: domain + "time_sheet_processor.php",
             data: {tag: 'getTs'}
         })
             .done(function (data) {
