@@ -16,10 +16,9 @@ $(function () {
     var regularStartTime = new time().fromText("10:00");
     var regularEndTime = new time().fromText("19:00");
     var regularWorkTime = new time().fromText("08:00");
-    $('#date').html(getTodayDateString());
+    $('#date').html(formatJapanDate(new Date()));
+    $('#date').data('date', formatDate(new Date()));
     $('#weekday').html(dayOfWeek());
-
-    // mainApp();
 
     async function mainApp() {
         await getCurrentTimesheet();
@@ -34,14 +33,14 @@ $(function () {
             url: "http://localhost:8081/login.php",
             data: {username: username, password: password}
         })
-            .done(function(data){
+            .done(function (data) {
                 onLoginDone(data);
             });
 
         event.preventDefault();
     });
 
-    async function onLoginDone(data){
+    async function onLoginDone(data) {
         if (data.result === 'success') {
             await mainApp();
             $('#formContent').hide();
@@ -53,9 +52,9 @@ $(function () {
 
     $('#save_timesheet').click(onSaveClick);
 
-    async function onSaveClick(){
+    async function onSaveClick() {
         let new_record = ["", "", "", "", "", "", "", "", "", "", ""];
-        new_record[0] = $('#date').html();
+        new_record[0] = $('#date').data('date');
         new_record[1] = $('#weekday').html();
         new_record[10] = $('#time_sheet_note').val();
         if (isHoliday()) {
@@ -63,17 +62,17 @@ $(function () {
         } else {
             let startTime = new time().fromText($('#start_time').val());
             let endTime = new time().fromText($('#end_time').val());
-            let workTime = caculateWorkTime(startTime, endTime);
-            let overWorkTime = caculateOverworkTime(workTime);
-            let earlyTime = caculateEarlyTime(startTime);
-            let lateTime = caculateLateTime(startTime);
+            // let workTime = caculateWorkTime(startTime, endTime);
+            // let overWorkTime = caculateOverworkTime(workTime);
+            // let earlyTime = caculateEarlyTime(startTime);
+            // let lateTime = caculateLateTime(startTime);
             new_record[2] = startTime.displayTime();
             new_record[3] = endTime.displayTime();
             new_record[4] = isWorkOverTime(startTime, endTime) ? overtimeBreak.displayTime() : "";
-            new_record[5] = workTime.displayTime();
-            new_record[6] = isWorkOverTime(startTime, endTime) ? overWorkTime.displayTime() : "";
-            new_record[7] = lateTime ? lateTime.displayTime() : "";
-            new_record[8] = earlyTime ? earlyTime.displayTime() : "";
+            // new_record[5] = workTime.displayTime();
+            // new_record[6] = isWorkOverTime(startTime, endTime) ? overWorkTime.displayTime() : "";
+            // new_record[7] = lateTime ? lateTime.displayTime() : "";
+            // new_record[8] = earlyTime ? earlyTime.displayTime() : "";
         }
 
         let id = $('#recordId').val();
@@ -104,22 +103,36 @@ $(function () {
             });
     }
 
-    function getTodayDateString() {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
+    function formatJapanDate(date) {
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1; //January is 0!
 
-        var yyyy = today.getFullYear();
         if (dd < 10) {
             dd = '0' + dd;
         }
         if (mm < 10) {
             mm = '0' + mm;
         }
-        // var today = dd + '/' + mm + '/' + yyyy;
-        var today = mm + '月' + dd + '日';
+        let result = mm + '月' + dd + '日';
 
-        return today;
+        return result;
+    }
+
+    function formatDate(date) {
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1; //January is 0!
+        let yyyy = date.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        let result = yyyy + '/' + mm + '/' + dd;
+
+        return result;
     }
 
     function dayOfWeek() {
@@ -137,7 +150,6 @@ $(function () {
             .done(function (data) {
                 if (data.result === 'success') {
                     timesheets = data.message;
-                    // convertTimesheet(timesheets);
                     drawTimesheet();
                     $('.timesheet-title h1').html(data.title);
                 } else {
@@ -152,23 +164,24 @@ $(function () {
             let rowClass = "";
             if (timesheet[1] === "土") {
                 rowClass += " holiday saturday";
-            } else if(timesheet[1] === "日"){
+            } else if (timesheet[1] === "日") {
                 rowClass += " holiday sunday";
             }
             if (timesheet[9] !== "") {
                 rowClass += " holiday";
             }
 
-            let tr = "<tr class='timesheet-row" + rowClass + "' id='day" + (index + 1) + "'></tr>";
+            let tr = "<tr class='timesheet-row" + rowClass + "' id='" + index + "'></tr>";
             $('#time_sheet table tbody').append(tr);
             timesheet.forEach(function (col, index) {
-                // if (index === 0) {
-                //     col = toJpMonthDate(col);
-                // }
+                if (index === 0) {
+                    col = toJpMonthDate(col);
+                }
                 var td = "<td>" + col + "</td>";
                 $('#time_sheet table tbody tr:last-child').append(td);
             });
 
+            // todo Add processing for edit button
             // let editBtn = $('<button class="btn btn-sm btn-info record-edit-btn" data-rowId=' + index + ' >Edit</button>');
             // $('#time_sheet table tbody tr:last-child').append(editBtn);
         });
@@ -226,6 +239,11 @@ $(function () {
         });
 
         return result;
+    }
+
+    function toJpMonthDate(monthDate) {
+        let tmp = monthDate.split('/');
+        return tmp[1] + "月" + tmp[2] + "日";
     }
 });
 

@@ -4,7 +4,6 @@
 
 #formContent{
     margin-top: 10%;
-    /*display: none;*/
 }
 
 .time-sheet thead {
@@ -50,4 +49,12 @@
 
 .holiday-toggle {
     background-color: #45a198;
+}
+
+.time-sheet table td, .time-sheet table th {
+    text-align: center;
+}
+
+.day-off .btn-group div {
+    margin-bottom: 10px;
 }
