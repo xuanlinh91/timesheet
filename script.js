@@ -24,6 +24,25 @@ $(function () {
         await getCurrentTimesheet();
     }
 
+    $('.holiday-toggle').click(function(e){
+        $("#start_time").val("");
+        $("#end_time").val("");
+        $("#day_off").val($(this).text());
+        $("#start_time").prop('disabled', true);
+        $("#end_time").prop('disabled', true);
+
+        e.stopPropagation();
+    });
+
+    $(document).click(function(){
+        $("#start_time").prop('disabled', false);
+        $("#end_time").prop('disabled', false);
+        $("#start_time").val("10:00");
+        $("#end_time").val("19:00");
+        $("#day_off").val("false");
+
+    });
+
     $('#login_submit').click(function (event) {
         var username = $('#username').val();
         var password = $('#password').val();
@@ -56,9 +75,10 @@ $(function () {
         let new_record = ["", "", "", "", "", "", "", "", "", "", ""];
         new_record[0] = $('#date').data('date');
         new_record[1] = $('#weekday').html();
+        let dayOffValue = $('#day_off').val();
         new_record[10] = $('#time_sheet_note').val();
         if (isHoliday()) {
-            new_record[9] = isHoliday();
+            new_record[9] = dayOffValue;
         } else {
             let startTime = new time().fromText($('#start_time').val());
             let endTime = new time().fromText($('#end_time').val());
@@ -230,15 +250,11 @@ $(function () {
     }
 
     function isHoliday() {
-        let result = null;
-        $('.holiday_toogle').each(function () {
-            if ($(this).is(':checked')) {
-                result = $(this).data('on');
-                return result;
-            }
-        });
+        let dayOffValue = $('#day_off').val();
+        if (dayOffValue !== 'false') {
+            return true;
+        } else return false
 
-        return result;
     }
 
     function toJpMonthDate(monthDate) {
