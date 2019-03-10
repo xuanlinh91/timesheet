@@ -11,6 +11,7 @@ $(function () {
     var domain = "http://localhost:8081/";
 
     var timesheets = [];
+    var currentMonth = '2019/02/01';
     var lunchBreak = new time().fromText("01:00");
     var overtimeBreak = new time().fromText("00:30");
     var regularStartTime = new time().fromText("10:00");
@@ -101,6 +102,15 @@ $(function () {
         drawTimesheet();
     }
 
+    function checkTimesheetExplicit(){
+        let currentMonthObj = dateFromString(currentMonth);
+        let days = daysInMonth(currentMonthObj.getFullYear(), currentMonthObj.getMonth());
+        if (timesheets.length >= days) {
+            $('.time-sheet-control').hide();
+            $('.day-off').hide();
+        }
+    }
+
     async function saveRecord(record, id) {
         if (id !== "" && id < timesheets.length) {
             timesheets[id] = record;
@@ -180,7 +190,7 @@ $(function () {
 
     function drawTimesheet() {
         $('#time_sheet table tbody').html("");
-        timesheets.forEach(function (timesheet, index) {
+        timesheets.forEach(function (timesheet, row) {
             let rowClass = "";
             if (timesheet[1] === "土") {
                 rowClass += " holiday saturday";
@@ -191,8 +201,10 @@ $(function () {
                 rowClass += " holiday";
             }
 
-            let tr = "<tr class='timesheet-row" + rowClass + "' id='" + index + "'></tr>";
+            let tr = "<tr class='timesheet-row" + rowClass + "' id='" + row + "'></tr>";
             $('#time_sheet table tbody').append(tr);
+            var td = "<td>" + (row + 1) + "</td>";
+            $('#time_sheet table tbody tr:last-child').append(td);
             timesheet.forEach(function (col, index) {
                 if (index === 0) {
                     col = toJpMonthDate(col);
@@ -205,6 +217,8 @@ $(function () {
             // let editBtn = $('<button class="btn btn-sm btn-info record-edit-btn" data-rowId=' + index + ' >Edit</button>');
             // $('#time_sheet table tbody tr:last-child').append(editBtn);
         });
+
+        checkTimesheetExplicit();
     }
 
     function caculateWorkTime(startTime, endTime) {
@@ -260,6 +274,16 @@ $(function () {
     function toJpMonthDate(monthDate) {
         let tmp = monthDate.split('/');
         return tmp[1] + "月" + tmp[2] + "日";
+    }
+
+    function dateFromString(str) {
+        let tmp = str.split('/');
+        // tmp[1] = parseInt(tmp[1]) - 1; //January start from 0
+        return new Date(tmp[0], tmp[1], tmp[2]);
+    }
+
+    function daysInMonth (month, year) {
+        return new Date(year, month, 0).getDate();
     }
 });
 
