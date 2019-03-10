@@ -9,74 +9,6 @@ $(function () {
     weekday[6] = "土";
     var domain = "http://ec2-13-230-40-192.ap-northeast-1.compute.amazonaws.com:8081/";
     // var domain = "http://localhost:8081/";
-    class time {
-        constructor() {
-            return this;
-        }
-
-        fromText(inputTextTime) {
-            let time = inputTextTime.split(":");
-            this.hour = parseInt(time[0]);
-            this.minute = parseInt(time[1]);
-
-            return this;
-        }
-
-        minus(inputTime) {
-            let diffHour = this.hour - inputTime.hour;
-            let diffMinute = this.minute - inputTime.minute;
-            if (diffMinute < 0) {
-                diffMinute = diffMinute + 60;
-                diffHour--;
-            }
-
-            let result = new time();
-
-            return result.fromHourAndMinute(diffHour, diffMinute);
-        }
-
-        greaterThan(time) {
-            let result = false;
-            if (this.hour > time.hour) {
-                result = true;
-            }
-            else if (this.hour == time.hour && this.minute > time.minute) {
-                result = true;
-            }
-
-            return result;
-        }
-
-        lessThan(time) {
-            let result = false;
-            if (this.hour < time.hour) {
-                result = true;
-            } else if (this.hour == time.hour && this.minute < time.minute) {
-                result = true;
-            }
-
-            return result;
-        }
-
-        fromHourAndMinute(hour, minute) {
-            this.hour = hour;
-            this.minute = minute;
-
-            return this;
-        }
-
-        fromExcelTime(excelTime) {
-            this.hour = Math.floor((excelTime * 86400) / 3600);
-            this.minute = Math.round(((excelTime * 86400) % 3600) / 60);
-
-            return this;
-        }
-
-        displayTime() {
-            return (formatNumberLessThanTen(this.hour) + ":" + formatNumberLessThanTen(this.minute) + ":00").toString();
-        }
-    }
-
 
     var timesheets = [];
     var lunchBreak = new time().fromText("01:00");
@@ -240,9 +172,9 @@ $(function () {
     }
 
 
-    function formatNumberLessThanTen(number) {
+    window.formatNumberLessThanTen = function formatNumberLessThanTen(number) {
         return ('0' + number).slice(-2)
-    }
+    };
 
     function caculateWorkTime(startTime, endTime) {
         let start = new time();
