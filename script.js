@@ -19,7 +19,7 @@ $(function () {
     $('#date').html(getTodayDateString());
     $('#weekday').html(dayOfWeek());
 
-    mainApp();
+    // mainApp();
 
     async function mainApp() {
         await getCurrentTimesheet();
@@ -34,19 +34,22 @@ $(function () {
             url: "http://localhost:8081/login.php",
             data: {username: username, password: password}
         })
-            .done(function (data) {
-                if (data.result === 'success') {
-                    $('#formContent').hide();
-                    // $('#time_sheet').html(data.html);
-                    $('#time_sheet').show();
-                    $('#today_time').show();
-                } else {
-                    $('#error_msg').html(data.message);
-                }
+            .done(function(data){
+                onLoginDone(data);
             });
 
         event.preventDefault();
     });
+
+    async function onLoginDone(data){
+        if (data.result === 'success') {
+            await mainApp();
+            $('#formContent').hide();
+            $('.content').show();
+        } else {
+            $('#error_msg').html(data.message);
+        }
+    }
 
     $('#save_timesheet').click(onSaveClick);
 
@@ -170,11 +173,6 @@ $(function () {
             // $('#time_sheet table tbody tr:last-child').append(editBtn);
         });
     }
-
-
-    window.formatNumberLessThanTen = function formatNumberLessThanTen(number) {
-        return ('0' + number).slice(-2)
-    };
 
     function caculateWorkTime(startTime, endTime) {
         let start = new time();

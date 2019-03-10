@@ -65,3 +65,7 @@ class time {
         return (formatNumberLessThanTen(this.hour) + ":" + formatNumberLessThanTen(this.minute)).toString();
     }
 }
+
+function formatNumberLessThanTen(number) {
+    return ('0' + number).slice(-2)
+}

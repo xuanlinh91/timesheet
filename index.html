@@ -2,82 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Timesheet</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/css/mdb.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
-<div class="wrapper fadeInDown row">
+<div id="formContent" class="ml-1">
     <div class="container-fluid">
-        <div id="formContent">
-            <form class="login-form">
-                <input type="text" id="username" class="fadeIn second" autofocus name="login" placeholder="login">
-                <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
-                <input type="submit" id="login_submit" class="fadeIn fourth" value="Log In">
-                <p class="text-danger" id="error_msg"></p>
-            </form>
-        </div>
-        <div class="timesheet-title"><h1></h1></div>
-        <div class="time-sheet" id="time_sheet">
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th scope="col">日</th>
-                    <th scope="col">曜日</th>
-                    <th scope="col">始業時刻</th>
-                    <th scope="col">終業時刻</th>
-                    <th scope="col">休憩時間２</th>
-                    <th scope="col">所定内</th>
-                    <th scope="col">残業時間</th>
-                    <th scope="col">遅</th>
-                    <th scope="col">早</th>
-                    <th scope="col">お休み</th>
-                    <th scope="col">備考</th>
-                    <!--<th scope="col"></th>-->
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-        <div class="row">
-            <div class="today-time col-sm-12 input-group" id="today_time">
-                <input type="hidden" id="recordId"/>
-                <div class="col-sm-12"><span class="date" id="date"></span><span class="weekday"
-                                                                                 id="weekday"></span></div>
-                <div class="col-sm-12">
-                    <input type="time form-control" name="start_time" id="start_time" value="10:00">
-                </div>
-                <div class="d-none d-lg-block">:</div>
-                <div class="col-sm-12">
-                    <input type="time form-control" name="end_time" id="end_time" value="19:00">
-                </div>
-                <div class="btn-group col-sm-12">
-                    <button class="btn btn-primary btn-block" id="save_timesheet">Save</button>
+        <div class="row justify-content-center">
+            <div class="card col-sm-10 col-lg-4">
+                <h5 class="card-header info-color white-text text-center py-4">
+                    <strong>Sign in</strong>
+                </h5>
+                <div class="card-body px-lg-5 pt-0">
+                    <form class="text-center login-form" style="color: #757575;">
+                        <div class="md-form">
+                            <input type="text" id="username" name="username" class="form-control">
+                            <label for="username">Username</label>
+                        </div>
+                        <div class="md-form">
+                            <input type="password" id="password" name="password" class="form-control">
+                            <label for="password">Password</label>
+                        </div>
+                        <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
+                                id="login_submit"
+                                type="submit">Sign in
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="day-off row">
-            <div class="input-group">
-                <div class="col-sm-12">
-                    <input type="checkbox" class="holiday_toogle" id="paid_holiday" data-toggle="toggle"
-                           data-onstyle="success"
-                           data-offstyle="default" data-on="有給" data-off="有給">
-                    <input type="checkbox" class="holiday_toogle" id="absence" data-toggle="toggle"
-                           data-onstyle="success"
-                           data-offstyle="default" data-on="欠勤" data-off="欠勤">
-                    <input type="checkbox" class="holiday_toogle" id="special_holiday" data-toggle="toggle"
-                           data-onstyle="success"
-                           data-offstyle="default" data-on="特別休暇" data-off="特別休暇">
-                    <input type="checkbox" class="holiday_toogle" id="public_holiday" data-toggle="toggle"
-                           data-onstyle="success" data-offstyle="default" data-on="祝日" data-off="祝日">
+    </div>
+</div>
+
+
+<div class="wrapper fadeInDown row">
+    <div class="container-fluid">
+        <div class="content row justify-content-center">
+            <div class="timesheet-title text-center"><h1></h1></div>
+            <div class="time-sheet" id="time_sheet">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">日</th>
+                        <th scope="col">曜日</th>
+                        <th scope="col">始業時刻</th>
+                        <th scope="col">終業時刻</th>
+                        <th scope="col">休憩時間２</th>
+                        <th scope="col">所定内</th>
+                        <th scope="col">残業時間</th>
+                        <th scope="col">遅</th>
+                        <th scope="col">早</th>
+                        <th scope="col">お休み</th>
+                        <th scope="col">備考</th>
+                        <!--<th scope="col"></th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="today-time col-sm-12 input-group" id="today_time">
+                    <input type="hidden" id="recordId"/>
+                    <div class="col-sm-12"><span class="date" id="date"></span><span class="weekday"
+                                                                                     id="weekday"></span></div>
+                    <div class="col-sm-12">
+                        <input type="time form-control" name="start_time" id="start_time" value="10:00">
+                    </div>
+                    <div class="d-none d-lg-block">:</div>
+                    <div class="col-sm-12">
+                        <input type="time form-control" name="end_time" id="end_time" value="19:00">
+                    </div>
+                    <div class="btn-group col-sm-12">
+                        <button class="btn btn-primary btn-block" id="save_timesheet">Save</button>
+                    </div>
                 </div>
-                <!--<div class="col-sm-12">-->
+            </div>
+            <div class="day-off row">
+                <div class="input-group">
+                    <div class="col-sm-12">
+                        <input type="checkbox" class="holiday_toogle" id="paid_holiday" data-toggle="toggle"
+                               data-onstyle="success"
+                               data-offstyle="default" data-on="有給" data-off="有給">
+                        <input type="checkbox" class="holiday_toogle" id="absence" data-toggle="toggle"
+                               data-onstyle="success"
+                               data-offstyle="default" data-on="欠勤" data-off="欠勤">
+                        <input type="checkbox" class="holiday_toogle" id="special_holiday" data-toggle="toggle"
+                               data-onstyle="success"
+                               data-offstyle="default" data-on="特別休暇" data-off="特別休暇">
+                        <input type="checkbox" class="holiday_toogle" id="public_holiday" data-toggle="toggle"
+                               data-onstyle="success" data-offstyle="default" data-on="祝日" data-off="祝日">
+                    </div>
+                    <!--<div class="col-sm-12">-->
                     <input type="text" class="form-control" id="time_sheet_note" placeholder="備考">
-                <!--</div>-->
+                    <!--</div>-->
+                </div>
             </div>
         </div>
     </div>
@@ -89,4 +116,6 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/js/mdb.min.js"></script>
 </html>
