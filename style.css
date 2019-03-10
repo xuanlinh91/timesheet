@@ -8,7 +8,8 @@
 }
 
 .time-sheet thead {
-    background-color: #cbdbb8;
+    /*background-color: #cbdbb8;*/
+    background-color: #45a198;
 }
 
 /*.time-sheet tbody > tr > td:nth-child(2) {*/
@@ -41,4 +42,12 @@
 .row {
     margin-left: 0;
     margin-right: 0;
+}
+
+.time-sheet-control .form-group > div {
+    margin-bottom: 10px;
+}
+
+.holiday-toggle {
+    background-color: #45a198;
 }

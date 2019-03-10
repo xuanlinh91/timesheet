@@ -227,23 +227,5 @@ $(function () {
 
         return result;
     }
-
-    function convertTimesheet(input_timesheets) {
-        input_timesheets.forEach(function (timesheet, dateIndex) {
-            timesheet.forEach(function (col, index) {
-                // if (index > 1 && index < 9 && col !== "") {
-                //     let displayTime = new time();
-                //     col = displayTime.fromExcelTime(col).displayTime();
-                // }
-
-                timesheets[dateIndex][index] = col;
-            });
-        });
-    }
-
-    function toJpMonthDate(monthDate){
-        let tmp = monthDate.split('/');
-        return tmp[1] + "月" + tmp[2] + "日";
-    }
 });
 
