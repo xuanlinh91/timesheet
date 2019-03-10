@@ -7,8 +7,8 @@ $(function () {
     weekday[4] = "木";
     weekday[5] = "金";
     weekday[6] = "土";
-    var domain = "http://ec2-13-230-40-192.ap-northeast-1.compute.amazonaws.com:8081/";
-    // var domain = "http://localhost:8081/";
+    // var domain = "http://ec2-13-230-40-192.ap-northeast-1.compute.amazonaws.com:8081/";
+    var domain = "http://localhost:8081/";
 
     var timesheets = [];
     var lunchBreak = new time().fromText("01:00");
