@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!--<link rel="stylesheet" type="text/css" media="screen" href="vender/reset.css">-->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            var $x = jQuery.noConflict();
+        </script>        
+        <script type="text/javascript" src="turnBox.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <style>
+            .example {
+                margin: 0px auto;
+                line-height: 4.2;
+            }/*
+
+            .turnBoxButton {
+                display: block;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .turnBoxFaceNum1 {
+                background-color: #101010;
+            }
+
+            .turnBoxCurrentFace1 > .turnBoxFaceNum1 {
+                background-color: #2a2a2a;
+            }
+
+            .turnBoxCurrentFace1 > .turnBoxFaceNum1:hover {
+                background-color: #222;
+            }
+
+            .turnBoxFaceNum2 {
+                background-color: #fafafa;
+                font-size: 0px;
+            }
+
+            .turnBoxCurrentFace2 > .turnBoxFaceNum2 {
+                background-color: #fff;
+            }
+
+            .turnBoxFaceNum2 .turnBoxButton {
+                display: inline-block;
+                width: 50%;
+                height: 100%;
+                color: #00adea;
+                font-size: 20px;
+                line-height: 4.2;
+                box-sizing: border-box;
+            }
+
+            .turnBoxFaceNum2 .turnBoxButton:hover {
+                background-color: #fafafa;
+            }
+
+            .turnBoxFaceNum2 .turnBoxButtonPrev {
+                color: #ea0070;
+                border-right: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .turnBoxFaceNum3 {
+                background-color: #0087b7;
+            }
+
+            .turnBoxCurrentFace3 > .turnBoxFaceNum3 {
+                background-color: #00adea;
+            }
+
+            .turnBoxCurrentFace3 > .turnBoxFaceNum3:hover {
+                background-color: #00a2db;
+            }*/
+
+        </style>
+    </head>
+    <body>
+        <!--        <div class="example wizard">
+                    <div>
+                        <p class="turnBoxButton">OFF</p>
+                    </div>
+                    <div>
+                        <span class="turnBoxButton turnBoxButtonPrev">CANCEL</span>
+                        <span class="turnBoxButton">OK</span>
+                    </div>
+                    <div>
+                        <p class="turnBoxButton turnBoxButtonPrev">ON</p>
+                    </div>
+                </div>-->
+        <table border="1">
+            <tr>
+                <td><div class="example wizard">
+                        <div>
+                            <p class="turnBoxButton">OFF</p>
+                        </div>
+                        <div>
+                            <span class="turnBoxButton turnBoxButtonPrev">CANCEL</span>
+                            <span class="turnBoxButton">OK</span>
+                        </div>
+
+                        <div>
+                            <p class="turnBoxButton turnBoxButtonPrev">ON</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+        <script type="text/javascript">
+            $x(".example").turnBox({
+                width: 340,
+                height: 87
+            });
+        </script>
+
+    </body>
+</html>
