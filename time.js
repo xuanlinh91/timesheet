@@ -69,3 +69,15 @@ class time {
 function formatNumberLessThanTen(number) {
     return ('0' + number).slice(-2)
 }
+
+function formatTimeLessThanTen(timeStr) {
+    if(timeStr === ""){
+        return "";
+    }
+    
+    let time = timeStr.split(":");
+    let hour = time[0];
+    let minute = time[1];
+    let resultHour = ('0' + hour).slice(-2);
+    return resultHour + ':' + minute;
+}
