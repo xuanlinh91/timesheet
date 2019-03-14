@@ -50,7 +50,7 @@ $(function () {
         $.ajax({
             method: "POST",
             dataType: 'json',
-            url: "http://localhost:8081/login.php",
+            url: domain + "login.php",
             data: {username: username, password: password}
         })
             .done(function (data) {
