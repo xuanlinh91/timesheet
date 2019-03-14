@@ -1,5 +1,33 @@
+/* The navigation bar */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+  height: 50px;
+}
+
+/* Links inside the navbar */
+.navbar a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change background on mouse-over */
+.navbar a:hover {
+  background: #ddd;
+  color: black;
+}
+
+/* Main content */
 .content {
     display: none;
+    margin-top: 30px; /* Add a top margin to avoid content overlay */
 }
 
 #formContent{
@@ -31,13 +59,6 @@
     background-color: lightgrey;
 }
 
-.weekday::before {
-    content: '(';
-}
-.weekday::after {
-    content: ')';
-}
-
 .row {
     margin-left: 0;
     margin-right: 0;
@@ -51,10 +72,25 @@
     background-color: #45a198;
 }
 
+#day_off[value=有給] ~ div > #paid_holiday {
+    border: solid 1px red;
+}
+#day_off[value=欠勤] ~ div > #absence {
+    border: solid 1px red;
+}
+#day_off[value=欠特別休暇勤] ~ div > #special_holiday {
+    border: solid 1px red;
+}
+#day_off[value=祝日] ~ div > #public_holiday {
+    border: solid 1px red;
+}
+
 .time-sheet table td, .time-sheet table th {
     text-align: center;
+    font-size: 15px;
 }
 
 .day-off .btn-group div {
     margin-bottom: 10px;
 }
+
