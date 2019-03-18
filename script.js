@@ -7,7 +7,7 @@ $(function () {
     weekday[4] = "木";
     weekday[5] = "金";
     weekday[6] = "土";
-    var domain = "https://xuanlinh91aws.tk";
+    var domain = "https://xuanlinh91aws.tk/";
     // var domain = "http://localhost/timesheet_backend/src/";
 
     var timesheets = [];
