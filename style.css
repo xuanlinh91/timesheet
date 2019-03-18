@@ -1,33 +1,50 @@
+body {
+    font-family: "Helvetica";
+}
 /* The navigation bar */
 .navbar {
-  overflow: hidden;
-  background-color: #333;
-  position: fixed; /* Set the navbar to fixed position */
-  top: 0; /* Position the navbar at the top of the page */
-  width: 100%; /* Full width */
-  height: 50px;
+    background-color: #FFF;
+    width: 100%; /* Full width */
+    display: none;
+    z-index: 21;
+    padding: 0px 0px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-bottom: 1px solid lightgrey;
+}
+.navbar .btn {
+    color: white; 
+}
+.sticky {
+    position: fixed;
+    top: 0;
 }
 
 /* Links inside the navbar */
 .navbar a {
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
 }
 
 /* Change background on mouse-over */
 .navbar a:hover {
-  background: #ddd;
-  color: black;
+    background: #ddd;
+    color: black;
 }
 
 /* Main content */
 .content {
     display: none;
-    margin-top: 30px; /* Add a top margin to avoid content overlay */
+
+}
+.timesheet-title {
+    margin-bottom: 50px;
+    margin-top: 100px; /* Add a top margin to avoid content overlay */
 }
 
 #formContent{
@@ -40,7 +57,7 @@
 }
 
 /*.time-sheet tbody > tr > td:nth-child(2) {*/
-    /*background-color: #cbdbb8;*/
+/*background-color: #cbdbb8;*/
 /*}*/
 
 .time-sheet .saturday > td:nth-child(2) {
@@ -90,7 +107,15 @@
     font-size: 15px;
 }
 
+.time-sheet table th {
+    color: white;
+}
+
 .day-off .btn-group div {
     margin-bottom: 10px;
 }
 
+.end-of-month {
+    display: none;
+    margin-bottom: 50px;
+}
