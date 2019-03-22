@@ -7,20 +7,21 @@ $(function () {
     weekday[4] = "木";
     weekday[5] = "金";
     weekday[6] = "土";
-    var domain = "https://xuanlinh91aws.tk/";
-    // var domain = "http://localhost/timesheet_backend/src/";
+    // var domain = "http://ec2-13-230-40-192.ap-northeast-1.compute.amazonaws.com:8081/";
+    var domain = "http://localhost/timesheet_backend/src/";
 
     var timesheets = [];
-    var currentMonth = '2019/02/01';
+    var currentMonth = '2019/01/01';
     var lunchBreak = new time().fromText("01:00");
     var overtimeBreak = new time().fromText("00:30");
     var regularStartTime = new time().fromText("10:00");
     var regularEndTime = new time().fromText("19:00");
     var regularWorkTime = new time().fromText("08:00");
     let today = new Date();
-    let todayFormatted = today.getFullYear() + '-' + formatNumberLessThanTen((today.getMonth() + 1)) + '-' + today.getDate();
+    let todayFormatted = formatDate(today, '/');
 
     async function mainApp() {
+
         await getCurrentTimesheet();
         newRecord();
     }
@@ -55,6 +56,8 @@ $(function () {
 
     $('#download').click(function () {
         $('#download_excel_form').attr('action', domain + 'time_sheet_processor.php');
+        $('#download_excel_form input[name=token]').val(getCookie('token'));
+        $('#download_excel_form input[name=username]').val(getCookie('username'));
         $('#download_excel_form').submit();
     });
 
@@ -68,14 +71,51 @@ $(function () {
         alert("Nguyễn Xuân Linh");
     });
 
+    $('#logout').click(function () {
+        $.ajax({
+            method: "GET",
+            dataType: 'json',
+            url: domain + "login.php",
+            data: {tag: 'logout'}
+        })
+                .done(function (data) {
+                    location.reload();
+                    console.log(data);
+                });
+         
+        return false;
+    });
+
+    function checkLogin() {
+        $.ajax({
+            method: "POST",
+            dataType: 'json',
+            url: domain + "login.php",
+            data: {username: getCookie('username'), password: ""}
+        })
+                .done(function (data) {
+                    if (data.result === 'success') {
+                        onLoginDone(data);
+                    } else {
+                        $('#formContent').show();
+                    }
+                });
+    }
+
     $('#timesheet_date').change(function () {
         let inputDate = $(this).val();
-        $('#timesheet_date_weekday').html(dayOfWeek(new Date(inputDate)));
-        let holiday = checkHoliday(formatDate(inputDate));
-        if (holiday) {
-            onHoliday();
+        if (isDateRange(inputDate)) {
+            let dateRange = dateRangeFromString(inputDate);
+            if (equalDate(dateRange.startDate, dateRange.endDate)) {
+                $('#timesheet_date').val(formatDate(dateRange.startDate));
+            } else {
+                $('#recordId').val('');
+                $('#timesheet_date_weekday').html('-');
+            }
+        } else {
+            let tmp = new Date(inputDate);
+            newRecord(tmp, $('#recordId').val(''));
         }
-
     });
 
     $('#login_submit').click(function (event) {
@@ -94,7 +134,7 @@ $(function () {
         event.preventDefault();
     });
 
-    function onHoliday() {
+    function onHoliday(holiday) {
         $('.time-sheet-control input[type=time]').each(function () {
             $(this).val('');
         });
@@ -107,30 +147,40 @@ $(function () {
         $("#time_sheet_note").val(holiday[2]);
     }
 
-    function newRecord() {
+    function newRecord(inputDate) {
+        if (typeof inputDate !== 'object' || inputDate === "") {
+            inputDate = today;
+        }
         $('.time-sheet-control input[type=time]').each(function () {
             $(this).val('');
         });
 
-        $('#timesheet_date').val(todayFormatted);
+        $('#timesheet_date').val(formatDate(inputDate));
 //        Check if today is public holiday
-        let holiday = checkHoliday(new Date());
+        let holiday = checkHoliday(inputDate);
         if (holiday) {
-            onHoliday();
+            onHoliday(holiday);
+        } else {
+            $(".time-sheet-control input[type=time]").each(function () {
+                $(this).prop('disabled', false);
+            });
+
+            if (dayOfWeek(inputDate) === '土' || dayOfWeek(inputDate) === '日') {
+                $('#start_time').val('');
+                $('#end_time').val('');
+            } else {
+                $('#start_time').val(regularStartTime.displayTime());
+                $('#end_time').val(regularEndTime.displayTime());
+            }
+
+            $("#day_off").val('');
+            $("#time_sheet_note").val('');
         }
 
-        $('#timesheet_date_weekday').html(dayOfWeek(today));
-        if (dayOfWeek(today) === '土' || dayOfWeek(today) === '日') {
-            $('#start_time').val('');
-            $('#end_time').val('');
-        } else {
-            $('#start_time').val(regularStartTime.displayTime());
-            $('#end_time').val(regularEndTime.displayTime());
-        }
+        console.log(inputDate);
+        console.log(inputDate.getDay());
+        $('#timesheet_date_weekday').html(dayOfWeek(inputDate));
         $('#recordId').val('');
-        $(".time-sheet-control input[type=time]").each(function () {
-            $(this).prop('disabled', false);
-        });
 
         $('html, body').animate({
             scrollTop: $("#start_time").offset().top
@@ -146,7 +196,7 @@ $(function () {
 
     async function onDeleteRecord() {
         let recordId = $(this).data('record-id');
-        if (recordId) {
+        if (typeof recordId !== 'undefined') {
             timesheets.splice(recordId, 1);
         }
 
@@ -172,7 +222,7 @@ $(function () {
             });
         }
 
-        $('#timesheet_date').val(formatDate(dateFromString(editDate), '-'));
+        $('#timesheet_date').val(editDate);
         $('#timesheet_date_weekday').html(timesheets[id][1]);
         if (weekday === '土' || weekday === '日') {
             $('#start_time').val('');
@@ -189,7 +239,7 @@ $(function () {
         $('#late_time').val(formatTimeLessThanTen(timesheets[id][8]));
         $('#time_sheet_note').val(timesheets[id][10]);
         $('#recordId').val(id);
-
+        showHideInputControl('force');
         $('html, body').animate({
             scrollTop: $("#start_time").offset().top
         }, 1000);
@@ -198,10 +248,14 @@ $(function () {
 
     async function onLoginDone(data) {
         if (data.result === 'success') {
+            setCookie('username', data.username, 1);
+            setCookie('token', data.token, 1);
+
             await mainApp();
             $('#formContent').hide();
             $('.content').show();
             $('.navbar').css('display', 'inherit');
+
 
             var header = document.getElementById("navbar_menu");
             var sticky = header.offsetTop;
@@ -216,41 +270,35 @@ $(function () {
     $('#save_timesheet').click(onSaveClick);
 
     async function onSaveClick() {
-        let new_record = ["", "", "", "", "", "", "", "", "", "", ""];
-        new_record[0] = formatDate(new Date($('#timesheet_date').val()));
-        new_record[1] = $('#timesheet_date_weekday').html();
-        let dayOffValue = $('#day_off').val();
-        new_record[10] = $('#time_sheet_note').val();
-        if (isHoliday()) {
-            new_record[9] = dayOffValue;
-        } else {
-            let startTime = new time().fromText($('#start_time').val());
-            let endTime = new time().fromText($('#end_time').val());
-            let breakTime = $('#break_time').val();
-            if (breakTime === "") {
-                breakTime = isWorkOverTime(startTime, endTime) ? overtimeBreak.displayTime() : "";
-            }
-            // let workTime = calculateWorkTime(startTime, endTime);
-            // let overWorkTime = caculateOverworkTime(workTime);
-            // let earlyTime = caculateEarlyTime(startTime);
-            // let lateTime = caculateLateTime(startTime);
-            new_record[2] = startTime.displayTime();
-            new_record[3] = endTime.displayTime();
-            new_record[4] = breakTime;
+        let inputDate = $('#timesheet_date').val();
+        let id = $('#recordId').val();
+        if (isDateRange(inputDate)) {
+            let rangeOfDate = dateRangeFromString(inputDate);
+            for (var d = rangeOfDate.startDate; d <= rangeOfDate.endDate; d.setDate(d.getDate() + 1)) {
+                let holiday = checkHoliday(d);
+                if (holiday) {
+                    var createdRecord = createRecord(formatDate(d), dayOfWeek(d), "", "", "", "", "", "", "", "祝日", holiday[2]);
+                } else if (dayOfWeek(d) === '土' || dayOfWeek(d) === '日') {
+                    var createdRecord = createRecord(formatDate(d), dayOfWeek(d), "", "", "", "", "", "", "", "", "");
+                } else {
+                    var createdRecord = createRecord(formatDate(d), dayOfWeek(d), regularStartTime.displayTime(), regularEndTime.displayTime(), "", "", "", "", "", "", "");
+                }
 
-            new_record[5] = $('#work_time').val();
-            new_record[6] = $('#overwork_time').val();
-            new_record[7] = $('#late_time').val();
-            new_record[8] = $('#early_time').val();
-            new_record[10] = $('#time_sheet_note').val();
-            // new_record[5] = workTime.displayTime();
-            // new_record[6] = isWorkOverTime(startTime, endTime) ? overWorkTime.displayTime() : "";
-            // new_record[7] = lateTime ? lateTime.displayTime() : "";
-            // new_record[8] = earlyTime ? earlyTime.displayTime() : "";
+                if (checkTimesheetExplicit()) {
+                    break;
+                }
+
+                pushRecord(createdRecord, "");
+            }
+            id = "";
+
+        } else {
+
+            var createdRecord = createRecord($('#timesheet_date').val(), $('#timesheet_date_weekday').html(), $('#start_time').val(), $('#end_time').val(), $('#break_time').val(), $('#work_time').val(), $('#overwork_time').val(), $('#late_time').val(), $('#early_time').val(), $('#day_off').val(), $('#time_sheet_note').val());
+            pushRecord(createdRecord, id);
         }
 
-        let id = $('#recordId').val();
-        await saveRecord(new_record, id);
+        await saveTimesheet();
         await getCurrentTimesheet();
         drawTimesheet();
         if (id) {
@@ -260,31 +308,61 @@ $(function () {
         }
     }
 
+    function createRecord(...params) {
+        let new_record = params;
+        let dayOffValue = new_record[9]
+        if (dayOffValue) {
+            for (let i = 2; i < 9; i++) {
+                new_record[i] = "";
+            }
+        } else {
+
+            let startTime = new_record[2] !== "" ? new time().fromText(new_record[2]) : "";
+            let endTime = new_record[3] !== "" ? new time().fromText(new_record[3]) : "";
+            let breakTime = new_record[4];
+            if (breakTime === "" && new_record[2] !== "" && new_record[3] !== "") {
+                breakTime = isWorkOverTime(startTime, endTime) ? overtimeBreak.displayTime() : "";
+                new_record[4] = breakTime;
+            }
+        }
+
+        return new_record;
+    }
+
     function checkTimesheetExplicit() {
         let currentMonthObj = dateFromString(currentMonth);
         let days = daysInMonth(currentMonthObj.getMonth(), currentMonthObj.getFullYear());
         if (timesheets.length >= days) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function showHideInputControl(option) {
+        if (checkTimesheetExplicit() && option !== 'force') {
             $('.time-sheet-control').hide();
             $('.day-off').hide();
+            $('#new_record').prop('disabled', true);
             $('.end-of-month').css('display', 'flex');
         } else {
             $('.time-sheet-control').show();
             $('.day-off').show();
+            $('#new_record').prop('disabled', false);
             $('.end-of-month').hide();
         }
     }
 
-    async function saveRecord(record, id) {
+    function pushRecord(record, id) {
         if (id !== "" && id < timesheets.length) {
             timesheets[id] = record;
-        } else {
-            timesheets.push(record)
+        } else if (!checkTimesheetExplicit()) {
+            timesheets.push(record);
         }
 
         timesheets.sort(function (a, b) {
             return dateFromString(a[0]) - dateFromString(b[0])
         });
-        await saveTimesheet();
     }
 
     async function saveTimesheet() {
@@ -292,7 +370,7 @@ $(function () {
             method: "POST",
             dataType: 'json',
             url: domain + "time_sheet_processor.php",
-            data: {tag: 'saveTs', data: timesheets}
+            data: {tag: 'saveTs', data: timesheets, username: getCookie('username'), token: getCookie('token')}
         })
                 .done(function (data) {
                     if (data.result === 'success') {
@@ -302,8 +380,6 @@ $(function () {
                     }
                 });
     }
-
-
 
     function formatJapanDate(date) {
         let dd = date.getDate();
@@ -321,6 +397,7 @@ $(function () {
     }
 
     function formatDate(date, seperator = '/') {
+        console.log(date);
         let dd = date.getDate();
         let mm = date.getMonth() + 1; //January is 0!
         let yyyy = date.getFullYear();
@@ -346,15 +423,19 @@ $(function () {
             method: "POST",
             dataType: 'json',
             url: domain + "time_sheet_processor.php",
-            data: {tag: 'getTs'}
+            data: {tag: 'getTs', username: getCookie('username'), token: getCookie('token')}
         })
                 .done(function (data) {
                     if (data.result === 'success') {
                         timesheets = data.message;
+                        if (typeof timesheets[0] !== 'undefined') {
+                            currentMonth = timesheets[0][0];
+                        }
                         drawTimesheet();
                         $('.timesheet-title h1').html(data.title);
+                        $('.timesheet-name h4').html(data.name);
                     } else {
-                        console.log(data.message);
+                        console.log(data);
                     }
                 });
     }
@@ -400,7 +481,7 @@ $(function () {
 
         $('.edit-row').click(onEditRecord);
         $('.delete-row').click(showDeleteModal);
-        checkTimesheetExplicit();
+        showHideInputControl();
     }
 
     function calculateWorkTime(startTime, endTime) {
@@ -447,31 +528,40 @@ $(function () {
         return startTime.lessThan(regularStartTime) || endTime.greaterThan(regularEndTime) ? true : false;
     }
 
-    function isHoliday() {
-        let dayOffValue = $('#day_off').val();
-        if (dayOffValue) {
-            return true;
-        } else
-            return false
-    }
-
     function toJpMonthDate(monthDate) {
         let tmp = monthDate.split('/');
         return tmp[1] + "月" + tmp[2] + "日";
     }
-
 
     function daysInMonth(month, year) {
         month = month + 1;
         return new Date(year, month, 0).getDate();
     }
 
-    $(window).bind('scroll', function () {
-        if ($(window).scrollTop() > 50) {
-            $('.menu').addClass('fixed');
-        } else {
-            $('.menu').removeClass('fixed');
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
         }
-    });
+        return "";
+    }
+
+
+    checkLogin();
 });
 
