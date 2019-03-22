@@ -15,6 +15,7 @@
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/css/mdb.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
         <link href="style.css" rel="stylesheet">
         <style>
             .row-input {
@@ -49,6 +50,7 @@
                                     <input type="password" id="password" name="password" class="form-control">
                                     <label for="password">Password</label>
                                 </div>
+                                <span class="text-danger"></span>
                                 <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
                                         id="login_submit"
                                         type="submit">Sign in
@@ -61,6 +63,7 @@
         </div>
 
         <div class="timesheet-title text-center"><h1></h1></div>
+        <div class="timesheet-name text-center"><h4></h4></div>
         <div class="row">
             <div class="navbar justify-content-center" id="navbar_menu">
                 <div class="col-3">
@@ -73,10 +76,15 @@
                     <button class="btn btn-default" id="download">Download xlsx</button>
                     <form id="download_excel_form" action="" method="post">
                         <input type="hidden" name="tag" value="download">
+                        <input type="hidden" name="token" value="">
+                        <input type="hidden" name="username" value="">
                     </form>
                 </div>
                 <div class="col-2">
                     <button class="btn btn-default" id="about">About</button>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-info" id="logout">Sign out</button>
                 </div>
             </div>
         </div>
@@ -108,7 +116,7 @@
                         <input type="hidden" id="recordId"/>
                         <div class="form-group form-inline">
                             <div class="input-group col-3">
-                                <input type="date" id="timesheet_date" class="form-control">
+                                <input type="text" id="timesheet_date" class="form-control">
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="timesheet_date_weekday"></span>
                                 </div>
@@ -172,11 +180,9 @@
                             <div class="col-12">
                                 <input type="text" class="form-control time-sheet-note" id="time_sheet_note" placeholder="備考">
                             </div>
-
                             <div class="input-group col-3">
                                 <button class="btn btn-default btn-block" id="save_timesheet">Save</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -233,6 +239,7 @@
         <div class="end-of-month row justify-content-center">
             <span class="col-3 text-center text-danger">End of month!</span>
         </div>
+        <div class="loading-modal"><!-- Place at bottom of page --></div>
     </body>
     <script type="text/javascript" src="sha.js"></script>
     <script type="text/javascript" src="time.js"></script>
@@ -242,4 +249,31 @@
     <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/js/mdb.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+            $('#timesheet_date').daterangepicker({
+                "locale": {
+                    "format": "YYYY/MM/DD",
+                    "separator": " - ",
+                    "daysOfWeek": [
+                        "Su",
+                        "Mo",
+                        "Tu",
+                        "We",
+                        "Th",
+                        "Fr",
+                        "Sa",
+                    ],
+                }
+            });
+
+            $body = $("body");
+            $(document).ajaxStart(function () {
+                $body.addClass("loading");
+            });
+            $(document).ajaxStop(function () {
+                $body.removeClass("loading");
+            });
+    </script>
 </html>
