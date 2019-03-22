@@ -165,17 +165,41 @@ function dateFromString(str, spr = '/') {
 
 function checkHoliday(date) {
     let result = false;
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
     for (let i = 0; i < public_holiday.length; i++) {
         let element = public_holiday[i];
-        if(element[0] === '2019/3/21'){
-            console.log(date + ' ' + dateFromString(element[0]) + (date === dateFromString(element[0])));
-        }
-        
-        if (date === dateFromString(element[0])) {
+        if (date.getTime() === dateFromString(element[0]).getTime()) {
             result = element;
             break;
         }
     }
 
     return result;
+}
+
+function equalDate(firstDate, secondDate) {
+    if (firstDate.getFullYear() === secondDate.getFullYear() && firstDate.getMonth() === secondDate.getMonth() && firstDate.getDate() === secondDate.getDate()) {
+        return true;
+    } else
+        return false;
+}
+
+function isDateRange(dateInput) {
+    let split = dateInput.split(' - ');
+    if (split[0] !== undefined && split[1] !== undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function dateRangeFromString(dateRangeInput) {
+    let split = dateRangeInput.split(' - ');
+    if (split[1] !== undefined && split[1] !== undefined) {
+        return {startDate: new Date(split[0]), endDate: new Date(split[1])};
+    } else {
+        return false;
+    }
 }
