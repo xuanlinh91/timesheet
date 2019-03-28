@@ -8,7 +8,7 @@ $(function () {
     weekday[5] = "金";
     weekday[6] = "土";
     var domain = "https://xuanlinh91aws.tk/";
-    // var domain = "http://localhost/timesheet_backend/src/";
+    // var domain = "http://localhost:8081/";
 
     var timesheets = [];
     var currentMonth = '2019/01/01';
@@ -45,7 +45,7 @@ $(function () {
 
     });
 
-    // When the user scrolls the page, execute myFunction 
+    // When the user scrolls the page, execute myFunction
     function onScrollFuntion(position, header) {
         if (window.pageYOffset > position) {
             header.classList.add("sticky");
@@ -75,6 +75,8 @@ $(function () {
         $.ajax({
             method: "GET",
             dataType: 'json',
+            xhrFields: { withCredentials: true },
+            crossDomain:true,
             url: domain + "login.php",
             data: {tag: 'logout'}
         })
@@ -82,14 +84,16 @@ $(function () {
                     location.reload();
                     console.log(data);
                 });
-         
+
         return false;
     });
 
     function checkLogin() {
         $.ajax({
             method: "POST",
-            dataType: 'json',
+            // dataType: 'json',
+            xhrFields: { withCredentials: true },
+            crossDomain:true,
             url: domain + "login.php",
             data: {username: getCookie('username'), password: ""}
         })
@@ -124,10 +128,13 @@ $(function () {
         $.ajax({
             method: "POST",
             dataType: 'json',
+            xhrFields: { withCredentials: true },
+            crossDomain:true,
             url: domain + "login.php",
             data: {username: username, password: password}
         })
                 .done(function (data) {
+                    console.log(data);
                     onLoginDone(data);
                 });
 
@@ -369,6 +376,8 @@ $(function () {
         await $.ajax({
             method: "POST",
             dataType: 'json',
+            xhrFields: { withCredentials: true },
+            crossDomain:true,
             url: domain + "time_sheet_processor.php",
             data: {tag: 'saveTs', data: timesheets, username: getCookie('username'), token: getCookie('token')}
         })
@@ -422,6 +431,8 @@ $(function () {
         await $.ajax({
             method: "POST",
             dataType: 'json',
+            xhrFields: { withCredentials: true },
+            crossDomain:true,
             url: domain + "time_sheet_processor.php",
             data: {tag: 'getTs', username: getCookie('username'), token: getCookie('token')}
         })
@@ -564,4 +575,3 @@ $(function () {
 
     checkLogin();
 });
-
