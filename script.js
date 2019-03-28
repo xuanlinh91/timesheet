@@ -55,7 +55,7 @@ $(function () {
     }
 
     $('#download').click(function () {
-        $('#download_excel_form').attr('action', domain + 'time_sheet_processor.php');
+        $('#download_excel_form').attr('action', domain + 'time_sheet_processors.php');
         $('#download_excel_form input[name=token]').val(getCookie('token'));
         $('#download_excel_form input[name=username]').val(getCookie('username'));
         $('#download_excel_form').submit();
@@ -91,7 +91,7 @@ $(function () {
     function checkLogin() {
         $.ajax({
             method: "POST",
-            // dataType: 'json',
+            dataType: 'json',
             xhrFields: { withCredentials: true },
             crossDomain:true,
             url: domain + "login.php",
@@ -378,7 +378,7 @@ $(function () {
             dataType: 'json',
             xhrFields: { withCredentials: true },
             crossDomain:true,
-            url: domain + "time_sheet_processor.php",
+            url: domain + "time_sheet_processors.php",
             data: {tag: 'saveTs', data: timesheets, username: getCookie('username'), token: getCookie('token')}
         })
                 .done(function (data) {
@@ -433,7 +433,7 @@ $(function () {
             dataType: 'json',
             xhrFields: { withCredentials: true },
             crossDomain:true,
-            url: domain + "time_sheet_processor.php",
+            url: domain + "time_sheet_processors.php",
             data: {tag: 'getTs', username: getCookie('username'), token: getCookie('token')}
         })
                 .done(function (data) {
