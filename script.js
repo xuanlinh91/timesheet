@@ -7,8 +7,8 @@ $(function () {
     weekday[4] = "木";
     weekday[5] = "金";
     weekday[6] = "土";
-    var domain = "https://xuanlinh91aws.tk/";
-    // var domain = "http://localhost:8081/";
+    // var domain = "https://xuanlinh91aws.tk/";
+    var domain = "/backend/";
 
     var timesheets = [];
     var currentMonth = '2019/01/01';
@@ -55,7 +55,7 @@ $(function () {
     }
 
     $('#download').click(function () {
-        $('#download_excel_form').attr('action', domain + 'time_sheet_processors.php');
+        $('#download_excel_form').attr('action', domain + 'time_sheet_processors0.php');
         $('#download_excel_form input[name=token]').val(getCookie('token'));
         $('#download_excel_form input[name=username]').val(getCookie('username'));
         $('#download_excel_form').submit();
@@ -75,8 +75,6 @@ $(function () {
         $.ajax({
             method: "GET",
             dataType: 'json',
-            xhrFields: { withCredentials: true },
-            crossDomain:true,
             url: domain + "login.php",
             data: {tag: 'logout'}
         })
@@ -92,8 +90,6 @@ $(function () {
         $.ajax({
             method: "POST",
             dataType: 'json',
-            xhrFields: { withCredentials: true },
-            crossDomain:true,
             url: domain + "login.php",
             data: {username: getCookie('username'), password: ""}
         })
@@ -184,8 +180,6 @@ $(function () {
             $("#time_sheet_note").val('');
         }
 
-        console.log(inputDate);
-        console.log(inputDate.getDay());
         $('#timesheet_date_weekday').html(dayOfWeek(inputDate));
         $('#recordId').val('');
 
@@ -376,9 +370,7 @@ $(function () {
         await $.ajax({
             method: "POST",
             dataType: 'json',
-            xhrFields: { withCredentials: true },
-            crossDomain:true,
-            url: domain + "time_sheet_processors.php",
+            url: domain + "time_sheet_processors0.php",
             data: {tag: 'saveTs', data: timesheets, username: getCookie('username'), token: getCookie('token')}
         })
                 .done(function (data) {
@@ -406,7 +398,6 @@ $(function () {
     }
 
     function formatDate(date, seperator = '/') {
-        console.log(date);
         let dd = date.getDate();
         let mm = date.getMonth() + 1; //January is 0!
         let yyyy = date.getFullYear();
@@ -431,20 +422,20 @@ $(function () {
         await $.ajax({
             method: "POST",
             dataType: 'json',
-            xhrFields: { withCredentials: true },
-            crossDomain:true,
-            url: domain + "time_sheet_processors.php",
+            url: domain + "time_sheet_processors0.php",
             data: {tag: 'getTs', username: getCookie('username'), token: getCookie('token')}
         })
                 .done(function (data) {
                     if (data.result === 'success') {
-                        timesheets = data.message;
+                        timesheets = JSON.parse(data.message);
                         if (typeof timesheets[0] !== 'undefined') {
                             currentMonth = timesheets[0][0];
+                            let currentMonthObj =  dateFromString(currentMonth);
+                            $('.timesheet-title h1').html(currentMonthObj.getFullYear()+'年'+(currentMonthObj.getMonth()+1)+'月' + '出勤簿');
+                            $('.timesheet-name h4').html('氏名：'+data.name);
                         }
                         drawTimesheet();
-                        $('.timesheet-title h1').html(data.title);
-                        $('.timesheet-name h4').html(data.name);
+                        $('.timesheet-name h4').html();
                     } else {
                         console.log(data);
                     }
