@@ -435,8 +435,8 @@ $(function () {
         })
                 .done(function (data) {
                     if (data.result === 'success') {
-                        timesheets = JSON.parse(data.message);
-                        if (timesheets !== null) {
+                        if (data.message !== "null") {
+                            timesheets = JSON.parse(data.message);                            
                             currentMonth = timesheets[0][0];
                             let currentMonthObj =  dateFromString(currentMonth);
                             $('.timesheet-title h1').html(currentMonthObj.getFullYear()+'年'+(currentMonthObj.getMonth()+1)+'月' + '出勤簿');
