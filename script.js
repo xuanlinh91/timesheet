@@ -7,8 +7,8 @@ $(function () {
     weekday[4] = "木";
     weekday[5] = "金";
     weekday[6] = "土";
-    // var domain = "https://xuanlinh91aws.tk/";
-    var domain = "/backend/";
+    var domain = "https://xuanlinh91aws.tk/";
+    // var domain = "/backend/";
 
     var timesheets = [];
     var currentMonth = '2019/01/01';
